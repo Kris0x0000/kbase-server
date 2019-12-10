@@ -1,23 +1,17 @@
-const Problem = require('../models/problem.model');
-const passport = require('passport')
-  , LocalStrategy = require('passport-local').Strategy;
-
+const Issue = require('../models/issue.model');
 
 // controllers/products.js
-exports.problem_create = function (req, res) {
+exports.issue_create = function (req, res) {
+  console.log('req.body');
+console.log(res.locals.username);
 
-
-console.log(JSON.stringify(req.headers));
-//req.body.tags.forEach((tag)=>{o[key].push(tag)});
-
-
-    let problem = new Problem(
+    let problem = new Issue(
         {
           title: req.body.title,
           body: req.body.body,
           tags: req.body.tags,
           timestamp: Date.now(),
-          username: res.locals.id
+          username: res.locals.username
         }
     );
       //  problem.tags.name.push(req.body.tags);
@@ -29,7 +23,7 @@ console.log(JSON.stringify(req.headers));
         } else {
         res.send('{ "text": "Problem added"}');
 }
-    })
+});
 };
 
 exports.product_details = function (req, res) {
