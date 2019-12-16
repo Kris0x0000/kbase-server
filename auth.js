@@ -44,10 +44,12 @@ exports.login = (req, res, next) => {
 exports.auth = (req, res, next) => {
 
   if(!req.cookies.token) {
+    console.log('token not found');
     return res.status(401).end();
   }
   let token = jwt.verify(req.cookies.token, jwtKey, (err, cb)=>{
     if(err) {
+      console.log('wrong token');
       return res.status(401).end();
     }
     res.locals.username = cb.username;

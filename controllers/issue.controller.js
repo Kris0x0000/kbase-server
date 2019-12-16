@@ -1,6 +1,6 @@
 const Issue = require('../models/issue.model');
 
-// controllers/products.js
+// controllers/products.js  ////
 exports.issue_create = function (req, res) {
   console.log('req.body');
 console.log(res.locals.username);
@@ -26,11 +26,15 @@ console.log(res.locals.username);
 });
 };
 
-exports.product_details = function (req, res) {
-    Product.findById(req.params.id, function (err, product) {
-        if (err){
-      //  res.send(err);
-        res.send(product);
-   }
-    })
+exports.getissue = function (req, res) {
+
+  Issue.find({tags: { $all: req.body.tags }}, function(err, docs) {
+    if(err) {res.send(err)}
+    if(docs) {
+      res.send(docs);
+    } else {
+      res.send('not found');
+    }
+  });
+
 };
