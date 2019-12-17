@@ -26,13 +26,29 @@ console.log(res.locals.username);
 });
 };
 
-exports.getissue = function (req, res) {
+exports.getIssueByTag = function (req, res) {
 
   Issue.find({tags: { $all: req.body.tags }}, function(err, docs) {
     if(err) {res.send(err)}
     if(docs) {
       res.send(docs);
     } else {
+      res.send('not found');
+    }
+  });
+
+};
+
+
+exports.getIssueById = function (req, res) {
+
+  Issue.findById({_id: req.body.id}, function(err, docs) {
+    if(err) {res.send(err)}
+    if(docs) {
+      console.log(docs);
+      res.send(docs);
+    } else {
+      console.log('not found');
       res.send('not found');
     }
   });
