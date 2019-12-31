@@ -37,10 +37,10 @@ app.use('/api/user/', user);
 
 app.use('/api/issue', issue);
 
-app.get('/api/test', (req, res, next)=>{
-  console.log('test');
-  res.end();
-}
+app.post('/api/isauthenticated', (req, res, next)=>{
+  console.log('authenticated');
+  res.status(200).end();
+  }
 ); //end of app.get
 
 let port = 1234;
