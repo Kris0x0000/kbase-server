@@ -69,18 +69,21 @@ exports.getAllTags = function (req, res) {
 
       var arr2 = [];
       var obj={};
+      var unique_arr
 
       docs.map((item)=>{
 
-          item.tags.forEach(a => {console.log('element',a);
+          item.tags.forEach(a => {
+            console.log('element',a);
             arr2.push(a);
 
           });
       });
 
     console.log('item: ', arr2);
+    let unique = [...new Set(arr2)];
 
-    res.send(arr2);
+    res.send(unique);
     } else {
       res.send('not found');
     }

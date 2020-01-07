@@ -5,6 +5,11 @@ const passport = require('passport'), LocalStrategy = require('passport-local').
 
 // controllers/products.js
 exports.user_create = function (req, res) {
+
+      console.log(res.locals.username)
+      
+
+
     let user = new User(
         {
             login: req.body.login ,
@@ -15,7 +20,6 @@ exports.user_create = function (req, res) {
 
     user.save(function (err) {
         if (err) {
-          //  return next(err);
              res.send('error');
         }
         res.send('User Created successfully')
@@ -42,7 +46,6 @@ Users=new User({email: req.body.email, username : req.body.username});
         } else {
           res.json({success: true, message: "Your account has been saved"});
         }
-
       }
     );
 

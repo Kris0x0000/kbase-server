@@ -7,6 +7,7 @@ const User = require('./models/user.model');
 const cors = require('cors');
 const app = express();
 const db = require('./config/db.js');
+const conf = require('./config/conf.js');
 const auth = require('./auth.js');
 var cookieParser = require('cookie-parser');
 
@@ -17,6 +18,9 @@ const corsOptions = {
   allowedHeaders: ['Content-Type', 'Authorization']
 };
 
+
+// app init
+initApp(conf.username, conf.password);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -54,3 +58,32 @@ app.use(function (err, req, res, next) {
   console.error(err.stack);
   res.status(500).send('Something broke!');
 });
+
+
+function initApp (username, password) {
+
+  User.find({}, function (err,docs) {
+    if(docs.length === 0) {
+      console.log("\n adding default user: "+username, "\n password: "+password);
+      let user = new User(
+          {
+              username: username ,
+              password: password,
+              is_admin: true
+          }
+      );
+
+      user.save(function (err) {
+          if (err) {
+            console.log(err);
+          }
+      });
+    } else {
+      console.log("users already exist!");
+    }
+  });
+
+
+
+
+} //funct
