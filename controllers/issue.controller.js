@@ -1,8 +1,65 @@
 const Issue = require('../models/issue.model');
 const mongoose = require('mongoose');
+const User = require('../models/user.model');
+
+
+
+exports.is_owner = function(req,res) {
+
+  let owner='';
+
+  Issue.findById(req.body.id, function(err, issue) {
+    if(err) {
+      console.log(err);
+      res.sendStatus(399);
+      return;
+    }
+    owner = issue.username;
+      User.findOne({username: issue.username}, function(err, user) {
+        if(err) {
+          res.sendStatus(400);
+          return;
+        }
+
+        console.log("res.locals.username: ", res.locals.username);
+        console.log("res.locals.is_admin: ", res.locals.is_admin);
+        console.log("owner: ",owner);
+
+
+        if((res.locals.username !== owner) && (!res.locals.is_admin)) {
+
+            res.sendStatus(405);
+            return;
+        } else {
+          res.sendStatus(200);
+        }
+    });
+  });
+
+}
 
 
 exports.issue_edit = function(req, res) {
+
+  let owner='';
+
+  Issue.findById({_id: req.body.id}, function(err, issue) {
+    if(err) {
+      res.sendStatus(404);
+      return;
+    }
+    owner = issue.username;
+      User.findOne({username: issue.username}, function(err, user) {
+        if(err) {
+          res.sendStatus(404);
+          return;
+        }
+
+          if((res.locals.username !== owner) && (!res.locals.is_admin)) {
+
+            res.sendStatus(405);
+            return;
+        }
 
   let object =
       {
@@ -10,17 +67,20 @@ exports.issue_edit = function(req, res) {
         body: req.body.body,
         tags: req.body.tags,
         timestamp: Date.now(),
-        username: res.locals.username
+        owner: res.locals.id
       }
 
 
-  Issue.findByIdAndUpdate(req.body.id, object, (err, docs)=>{
-    if(err) {console.log(err); res.send(err)}
-    res.send(docs);
+Issue.updateOne({_id: req.body.id}, object,(err,docs)=>{
+  if(err) {
+    res.send(err).end();
+  }
+  res.send(docs);
+
+      });
+    });
   });
-
 }
-
 
 
 exports.issue_create = function (req, res) {
@@ -31,10 +91,10 @@ exports.issue_create = function (req, res) {
           body: req.body.body,
           tags: req.body.tags,
           timestamp: Date.now(),
-          username: res.locals.username
+          owner_id: res.locals.id
         }
     );
-      //  problem.tags.name.push(req.body.tags);
+
     problem.save(function (err) {
         if (err) {
           console.log(err)
@@ -42,23 +102,48 @@ exports.issue_create = function (req, res) {
             //return next(err);
         } else {
         res.send('{ "text": "Problem added"}');
-}
-});
+      }
+    });
 };
 
 exports.getIssueByTag = function (req, res) {
 
-console.log("req.body", req.body);
   Issue.find({tags: { $all: req.body.tags }}, function(err, docs) {
     if(err) {res.send(err)}
     if(docs) {
-      res.send(docs);
-    } else {
-    //  res.send('not found');
-    }
+      ProcessArray(docs).then(data => {
+        res.send(data);
+      });
+    } //docs
   });
+}; //funct
 
-};
+
+ProcessArray = async (docs) => {
+  return Promise.all(docs.map((item)=>ProcessItem(item)));
+}
+
+ProcessItem = async (item) => {
+  let owner = await GetOwnerName(item.owner_id);
+  return {tags: item.tags, _id: item._id, title: item.title, body: item.body, timestamp: item.timestamp, owner: owner};
+}
+
+GetOwnerName = async (id) => {
+
+    return new Promise(function (resolve, reject) {
+        User.findById({_id: id}, function(err, docs) {
+            if(err) {
+            } else {
+              if(docs) {
+            resolve(docs.username);
+          } else {
+            resolve("usunięty");
+          }
+          }
+            });
+    });
+}
+
 
 
 exports.getAllTags = function (req, res) {
@@ -102,24 +187,44 @@ exports.getIssueById = function (req, res) {
       res.send(docs);
     } else {
       console.log('not found');
-      //res.send('not found');
+      res.sendStatus(404);
     }
   });
 
 };
 
 
-exports.issue_delete = function (req, res) {
+exports.issue_delete = function (req, res, next) {
 
-  Issue.findByIdAndRemove({_id: req.body.id}, function(err, docs) {
-    if(err) {res.send('err')}
-    if(docs) {
-      console.log(docs);
-      res.send(docs);
-    } else {
-      console.log('not found');
-      //res.send('not found');
+  let owner='';
+
+  Issue.findById({_id: req.body.id}, function(err, issue) {
+    if(err) {
+      res.sendStatus(404);
+      return;
     }
+    owner = issue.username;
+      User.findOne({username: issue.username}, function(err, user) {
+        if(err) {
+          res.sendStatus(404);
+          return;
+        }
+
+      if((res.locals.username !== owner) && (!res.locals.is_admin)) {
+
+            res.sendStatus(405);
+            return;
+        }
+
+        issue.remove({_id: req.body.id});
+          res.sendStatus(200);
+
+
+      });
   });
 
-};
+
+
+
+
+},(err,req,res) => {console.log(err)};

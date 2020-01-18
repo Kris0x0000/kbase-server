@@ -7,7 +7,9 @@ const user_controller = require('../controllers/user.controller');
 //router.get('/test', user_controller.test);
 
 router.post('/create', user_controller.user_create);
-router.get('/:id', user_controller.user_details);
-//router.post('/login', user_controller.login);
+router.post('/isadmin', user_controller.isadmin);
+router.get('/:id', user_controller.get_user_by_id);
+router.post('/getAllUsers', user_controller.get_all_users);
+router.post('/getUserByName', user_controller.get_user_by_name);
 
 module.exports = router;

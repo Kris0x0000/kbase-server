@@ -1,11 +1,14 @@
 module.exports = {
   // defult administration user, created if no users found in db.
-  username: "kris",
-  password: "1234",
+  username: "admin",
+  password: "12345",
 
-  // token expiry timeout
+  // token expiry timeout (seconds)
   token_timeout: 1800,
 
+  // whatever, but need to change before use for security reasons
+  jwt_key: 'arturborubar',
+
   // mongodb://username:password@address:port/database
-  db_conn_string: 'mongodb://dba:password@localhost:27017/test'
+  db_conn_string: 'mongodb://localhost:27017/baza_wiedzy'
 }

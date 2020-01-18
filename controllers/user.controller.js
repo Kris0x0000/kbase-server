@@ -1,52 +1,70 @@
 const User = require('../models/user.model');
-const Group = require('../models/group.model');
 const passport = require('passport'), LocalStrategy = require('passport-local').Strategy;
 
+
+
+exports.isadmin = function(req,res) {
+  if(!res.locals.is_admin) {
+    res.send(403).end();
+    return;
+  } else {
+    res.send(200).end();
+    return;
+  }
+};
 
 // controllers/products.js
 exports.user_create = function (req, res) {
 
-      console.log(res.locals.username)
-      
-
+    if(!res.locals.is_admin) {
+      res.send(401).end();
+      return;
+    }
 
     let user = new User(
         {
-            login: req.body.login ,
-            password: req.body.password
+            username: req.body.username ,
+            password: req.body.password,
+            is_admin: req.body.is_admin,
         }
     );
 
 
     user.save(function (err) {
         if (err) {
-             res.send('error');
+             console.log(err);
         }
-        res.send('User Created successfully')
+        res.sendStatus(200);
     })
 };
 
 
-exports.user_details = function (req, res) {
+exports.get_user_by_id = function (req, res) {
     User.findById(req.params.id, function (err, user) {
-        if (err) return next(err);
+        if (err) {
+          res.send(err);
+        } else {
         res.send(user);
+      }
     })
 };
 
-
-
-exports.user_register = (req, res, next)=> {
-Users=new User({email: req.body.email, username : req.body.username});
-
-      User.register(Users, req.body.password, function(err, user) {
-
+exports.get_user_by_name = function (req, res) {
+  console.log("username: ", req.body.username);
+    User.findOne({username: req.body.username}, function (err, user) {
         if (err) {
-          res.json({success: false, message:"Your account could not be saved. Error: ", err});
+          res.sendStatus(400);
         } else {
-          res.json({success: true, message: "Your account has been saved"});
-        }
-      }
-    );
+        res.send(user);
 
-  };
+      }
+    });
+};
+
+exports.get_all_users = function (req,res) {
+  User.find({}, function(err, user) {
+    if(err) {return next(err)};
+  res.send(user);
+
+  });
+};

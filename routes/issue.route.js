@@ -8,6 +8,7 @@ router.post('/delete', issue_controller.issue_delete);
 router.post('/getIssueByTag', issue_controller.getIssueByTag);
 router.post('/getIssueById', issue_controller.getIssueById);
 router.post('/getAllTags', issue_controller.getAllTags);
+router.post('/isOwner', issue_controller.is_owner);
 
 
 module.exports = router;
