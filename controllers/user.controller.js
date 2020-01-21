@@ -39,8 +39,27 @@ exports.user_create = function (req, res) {
 };
 
 
+exports.user_edit = function (req, res) {
+
+    if(!res.locals.is_admin) {
+      res.send(401).end();
+      return;
+    }
+console.log("user_edit");
+    User.findByIdAndUpdate(req.body.id,{username: req.body.username, password: req.body.password, is_admin: req.body.is_admin}, function (err, user) {
+        if (err) {
+          res.send(err);
+          return;
+        } else {
+          console.log("user: ",user);
+      res.sendStatus(200);
+      }
+    });
+};
+
+
 exports.get_user_by_id = function (req, res) {
-    User.findById(req.params.id, function (err, user) {
+    User.findById(req.body.id, function (err, user) {
         if (err) {
           res.send(err);
         } else {
@@ -68,3 +87,16 @@ exports.get_all_users = function (req,res) {
 
   });
 };
+
+
+exports.user_delete = function (req, res) {
+
+  User.findByIdAndDelete({_id: req.body.id}, function(err, issue) {
+    if(err) {
+      res.sendStatus(404);
+      return;
+    } else {
+      res.sendStatus(200);
+    }
+      });
+  }

@@ -8,9 +8,10 @@ let IssueSchema = new Schema({
 	title: {type: String, required: true, max: 100},
   body: {type: String, required: true},
   tags: [String],
-  timestamp: {type: Number, required: true},
-  owner_id: {type: String, required: true}
-
+  create_timestamp: {type: Number, required: true},
+  creator_id: {type: String, required: true},
+	edit_timestamp: {type: Number, required: false},
+  editor_id: {type: String, required: false},
 },
 		{ collection: 'issues' }
 );

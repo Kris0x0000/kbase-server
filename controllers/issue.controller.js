@@ -21,10 +21,6 @@ exports.is_owner = function(req,res) {
           return;
         }
 
-        console.log("res.locals.username: ", res.locals.username);
-        console.log("res.locals.is_admin: ", res.locals.is_admin);
-        console.log("owner: ",owner);
-
 
         if((res.locals.username !== owner) && (!res.locals.is_admin)) {
 
@@ -66,8 +62,8 @@ exports.issue_edit = function(req, res) {
         title: req.body.title,
         body: req.body.body,
         tags: req.body.tags,
-        timestamp: Date.now(),
-        owner: res.locals.id
+        edit_timestamp: Date.now(),
+        editor_id: res.locals.id,
       }
 
 
@@ -90,8 +86,10 @@ exports.issue_create = function (req, res) {
           title: req.body.title,
           body: req.body.body,
           tags: req.body.tags,
-          timestamp: Date.now(),
-          owner_id: res.locals.id
+          create_timestamp: Date.now(),
+          creator_id: res.locals.id,
+          edit_timestamp: '',
+          editor_id: ''
         }
     );
 
@@ -120,12 +118,30 @@ exports.getIssueByTag = function (req, res) {
 
 
 ProcessArray = async (docs) => {
+  console.log("docs::", docs);
   return Promise.all(docs.map((item)=>ProcessItem(item)));
 }
 
 ProcessItem = async (item) => {
-  let owner = await GetOwnerName(item.owner_id);
-  return {tags: item.tags, _id: item._id, title: item.title, body: item.body, timestamp: item.timestamp, owner: owner};
+  console.log("item: ", item);
+  let creator = await GetOwnerName(item.creator_id);
+  let editor = '';
+  if(item.editor_id !== '') {
+    editor = await GetOwnerName(item.editor_id);
+  } else {
+    editor = '';
+  }
+
+  return {
+    tags: item.tags,
+     _id: item._id,
+      title: item.title,
+       body: item.body,
+        create_timestamp: item.create_timestamp,
+         creator: creator,
+         edit_timestamp: item.edit_timestamp,
+         editor: editor
+       };
 }
 
 GetOwnerName = async (id) => {
@@ -133,6 +149,7 @@ GetOwnerName = async (id) => {
     return new Promise(function (resolve, reject) {
         User.findById({_id: id}, function(err, docs) {
             if(err) {
+              console.log("error: ",err);
             } else {
               if(docs) {
             resolve(docs.username);
@@ -159,13 +176,13 @@ exports.getAllTags = function (req, res) {
       docs.map((item)=>{
 
           item.tags.forEach(a => {
-            console.log('element',a);
+          //  console.log('element',a);
             arr2.push(a);
 
           });
       });
 
-    console.log('item: ', arr2);
+    //console.log('item: ', arr2);
     let unique = [...new Set(arr2)];
 
     res.send(unique);
@@ -173,7 +190,6 @@ exports.getAllTags = function (req, res) {
       res.send('not found');
     }
   });
-
 };
 
 
@@ -183,8 +199,10 @@ exports.getIssueById = function (req, res) {
   Issue.findById({_id: req.body.id}, function(err, docs) {
     if(err) {res.send(err)}
     if(docs) {
-      console.log(docs);
-      res.send(docs);
+      ProcessArray([docs]).then(data => {
+        res.send(data);
+      });
+
     } else {
       console.log('not found');
       res.sendStatus(404);

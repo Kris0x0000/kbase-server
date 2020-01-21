@@ -17,6 +17,7 @@ exports.login = (req, res, next) => {
       if(err) {console.log(err)}
       if(result) {
         res.locals.username = result.username;
+        console.log("res.locals.username: ",res.locals.username);
         res.locals.id = result._id;
         if(result.is_admin) {
           res.locals.is_admin = true;
