@@ -42,6 +42,7 @@ app.use('/api/user/', user);
 app.use('/api/issue', issue);
 
 app.post('/api/isauthenticated', (req, res, next)=>{
+  console.log("reqfff: ",req.body.username);
   res.status(200).end();
   }
 ); //end of app.get

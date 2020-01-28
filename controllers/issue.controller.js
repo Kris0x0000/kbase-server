@@ -154,7 +154,7 @@ GetOwnerName = async (id) => {
               if(docs) {
             resolve(docs.username);
           } else {
-            resolve("usunięty");
+            resolve("użytkownik usunięty");
           }
           }
             });

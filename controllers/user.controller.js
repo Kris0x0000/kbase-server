@@ -58,6 +58,20 @@ console.log("user_edit");
 };
 
 
+exports.edit_my_user = function (req, res) {
+
+
+    User.findByIdAndUpdate(res.locals.id,{username: req.body.username, password: req.body.password, is_admin: res.locals.is_admin}, function (err, user) {
+        if (err) {
+          res.send(err);
+          return;
+        } else {
+          console.log("user: ",user);
+      res.sendStatus(200);
+      }
+    });
+};
+
 exports.get_user_by_id = function (req, res) {
     User.findById(req.body.id, function (err, user) {
         if (err) {
@@ -66,6 +80,10 @@ exports.get_user_by_id = function (req, res) {
         res.send(user);
       }
     })
+};
+
+exports.get_my_id = function (req, res) {
+  res.send(res.locals.id);
 };
 
 exports.get_user_by_name = function (req, res) {
