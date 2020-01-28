@@ -38,12 +38,12 @@ exports.user_create = function (req, res) {
     })
 };
 
-
 exports.user_edit = function (req, res) {
 
     if(!res.locals.is_admin) {
       res.send(401).end();
       return;
+
     }
     User.findByIdAndUpdate(req.body.id,{username: req.body.username, password: req.body.password, is_admin: req.body.is_admin}, function (err, user) {
         if (err) {
