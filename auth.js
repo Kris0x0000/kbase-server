@@ -17,14 +17,12 @@ exports.login = (req, res, next) => {
       if(err) {console.log(err)}
       if(result) {
         res.locals.username = result.username;
-        console.log("res.locals.username: ",res.locals.username);
         res.locals.id = result._id;
         if(result.is_admin) {
           res.locals.is_admin = true;
         } else {
           res.locals.is_admin = false;
         }
-        console.log("res.locals.is_admin at login: ", res.locals.is_admin);
 
         let token = jwt.sign({ username: result.username, id: result._id, is_admin: res.locals.is_admin}, jwtKey, {
        algorithm: 'HS256',
@@ -37,7 +35,7 @@ exports.login = (req, res, next) => {
     });
 
       }
-      else {console.log('either wrong login or password');
+      else {
       res.send(401);
       res.end();
      }
@@ -63,7 +61,6 @@ exports.auth = (req, res, next) => {
       res.locals.is_admin = true;
     }
 
-    console.log("res.locals.is_admin at auth : ", res.locals.is_admin);
 
     const nowUnixSeconds = Math.round(Number(new Date()) / 1000);
     if(cb.exp - nowUnixSeconds < 30) {

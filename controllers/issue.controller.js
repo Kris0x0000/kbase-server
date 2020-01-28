@@ -118,12 +118,10 @@ exports.getIssueByTag = function (req, res) {
 
 
 ProcessArray = async (docs) => {
-  console.log("docs::", docs);
   return Promise.all(docs.map((item)=>ProcessItem(item)));
 }
 
 ProcessItem = async (item) => {
-  console.log("item: ", item);
   let creator = await GetOwnerName(item.creator_id);
   let editor = '';
   if(item.editor_id !== '') {
@@ -176,13 +174,11 @@ exports.getAllTags = function (req, res) {
       docs.map((item)=>{
 
           item.tags.forEach(a => {
-          //  console.log('element',a);
             arr2.push(a);
 
           });
       });
 
-    //console.log('item: ', arr2);
     let unique = [...new Set(arr2)];
 
     res.send(unique);
@@ -204,7 +200,6 @@ exports.getIssueById = function (req, res) {
       });
 
     } else {
-      console.log('not found');
       res.sendStatus(404);
     }
   });

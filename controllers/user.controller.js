@@ -5,7 +5,7 @@ const passport = require('passport'), LocalStrategy = require('passport-local').
 
 exports.isadmin = function(req,res) {
   if(!res.locals.is_admin) {
-    res.send(403).end();
+    res.sendStatus(403).end();
     return;
   } else {
     res.send(200).end();
@@ -45,13 +45,11 @@ exports.user_edit = function (req, res) {
       res.send(401).end();
       return;
     }
-console.log("user_edit");
     User.findByIdAndUpdate(req.body.id,{username: req.body.username, password: req.body.password, is_admin: req.body.is_admin}, function (err, user) {
         if (err) {
           res.send(err);
           return;
         } else {
-          console.log("user: ",user);
       res.sendStatus(200);
       }
     });
@@ -66,7 +64,6 @@ exports.edit_my_user = function (req, res) {
           res.send(err);
           return;
         } else {
-          console.log("user: ",user);
       res.sendStatus(200);
       }
     });
@@ -87,7 +84,6 @@ exports.get_my_id = function (req, res) {
 };
 
 exports.get_user_by_name = function (req, res) {
-  console.log("username: ", req.body.username);
     User.findOne({username: req.body.username}, function (err, user) {
         if (err) {
           res.sendStatus(400);
