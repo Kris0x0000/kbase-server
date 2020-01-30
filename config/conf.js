@@ -10,5 +10,6 @@ module.exports = {
   jwt_key: 'arturborubar',
 
   // mongodb://username:password@address:port/database
-  db_conn_string: 'mongodb://localhost:27017/baza_wiedzy'
+  db_conn_string_dev: 'mongodb://localhost:27017/baza_wiedzy',
+  db_conn_string_prod: 'mongodb://mongo:27017/baza_wiedzy'
 }

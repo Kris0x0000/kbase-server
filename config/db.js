@@ -2,7 +2,14 @@
 const mongoose = require('mongoose');
 const conf = require('./conf.js');
 
-let dev_db_url = conf.db_conn_string;
+let dev_db_url='';
+
+if(process.env.NODE_ENV === 'production') {
+  dev_db_url = conf.db_conn_string_prod;
+} else {
+  dev_db_url = conf.db_conn_string_dev;
+}
+
 let mongoDB = process.env.MONGODB_URI || dev_db_url;
 mongoose.connect(mongoDB, {useNewUrlParser: true, useFindAndModify: false});
 mongoose.set('useCreateIndex', true);
