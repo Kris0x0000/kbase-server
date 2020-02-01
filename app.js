@@ -11,8 +11,8 @@ const conf = require('./config/conf.js');
 const auth = require('./auth.js');
 var cookieParser = require('cookie-parser');
 
-const corsOptions = {
-  origin: 'http://localhost:3000',
+let corsOptions = {
+  origin: conf().cors_origin_url,
   optionsSuccessStatus: 200,
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -20,7 +20,7 @@ const corsOptions = {
 
 
 // app init
-initApp(conf.username, conf.password);
+initApp(conf().username, conf().password);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({

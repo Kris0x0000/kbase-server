@@ -8,8 +8,8 @@ const CookieParser = require('cookie-parser');
 const conf = require('./config/conf.js');
 
 
-const jwtKey = conf.jwt_key;
-const jwtExpirySec = conf.token_timeout;
+const jwtKey = conf().jwt_key;
+const jwtExpirySec = conf().token_timeout;
 
 exports.login = (req, res, next) => {
 
