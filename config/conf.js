@@ -27,7 +27,7 @@ const prod_settings = {
 
   // mongodb://username:password@address:port/database
   db_conn_string: 'mongodb://mongo:27017/baza_wiedzy',
-  cors_origin_url: 'https://wiedza.zikom.com.pl:443'
+  cors_origin_url: 'https://wiedza.zikom.com.pl'
 };
 
 module.exports = function() {
