@@ -13,9 +13,12 @@ const jwtExpirySec = conf().token_timeout;
 
 exports.login = (req, res, next) => {
 
+  console.log("login");
+
   User.findOne({username: req.body.username, password: req.body.password}, (err, result)=>{
       if(err) {console.log(err)}
       if(result) {
+        console.log(result);
         res.locals.username = result.username;
         res.locals.id = result._id;
         if(result.is_admin) {
@@ -46,6 +49,8 @@ exports.login = (req, res, next) => {
 
 exports.auth = (req, res, next) => {
 
+  console.log("auth");
+
   if(!req.cookies.token) {
     return res.status(401).end();
   }
@@ -60,7 +65,6 @@ exports.auth = (req, res, next) => {
     if(cb.is_admin) {
       res.locals.is_admin = true;
     }
-
 
     const nowUnixSeconds = Math.round(Number(new Date()) / 1000);
     if(cb.exp - nowUnixSeconds < 30) {
