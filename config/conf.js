@@ -4,7 +4,7 @@ const dev_settings = {
   password: "12345",
 
   // token expiry timeout (seconds)
-  token_timeout: 1800,
+  token_timeout: 900,
 
   // whatever, but need to change before use for security reasons
   jwt_key: 'arturborubar',
@@ -20,7 +20,7 @@ const prod_settings = {
   password: "12345",
 
   // token expiry timeout (seconds)
-  token_timeout: 1800,
+  token_timeout: 900,
 
   // whatever, but need to change before use for security reasons
   jwt_key: 'arturborubar',

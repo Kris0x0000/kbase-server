@@ -13,12 +13,12 @@ const jwtExpirySec = conf().token_timeout;
 
 exports.login = (req, res, next) => {
 
-  console.log("login");
+  //console.log("login");
 
   User.findOne({username: req.body.username, password: req.body.password}, (err, result)=>{
       if(err) {console.log(err)}
       if(result) {
-        console.log(result);
+      //  console.log(result);
         res.locals.username = result.username;
         res.locals.id = result._id;
         if(result.is_admin) {
@@ -49,7 +49,7 @@ exports.login = (req, res, next) => {
 
 exports.auth = (req, res, next) => {
 
-  console.log("auth");
+  //console.log("auth");
 
   if(!req.cookies.token) {
     return res.status(401).end();
