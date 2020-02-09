@@ -3,6 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const issue = require('./routes/issue.route');
+const issueController = require('./controllers/issue.controller');
 const user = require('./routes/user.route');
 const User = require('./models/user.model');
 const app = express();
@@ -13,6 +14,7 @@ var cookieParser = require('cookie-parser');
 var multer  = require('multer');
 var crypto = require('crypto');
 var mime = require('mime-types');
+var cron = require('node-cron');
 
 let upload_dest = 'uploads/'
 app.use('/uploads', express.static(__dirname +'/uploads'));
@@ -29,6 +31,11 @@ let corsOptions = {
 
 // app init
 initApp(conf().username, conf().password);
+
+cron.schedule('3 0 * * *', () => {
+  //purge orphaned images
+issueController.purgeOrphanedImages();
+});
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -87,7 +94,7 @@ let port = 1234;
 
 app.listen(port, () => {
 	console.log('Server is up and running on port numner ' + port);
-}
+  }
 );
 
 app.use(function (err, req, res, next) {

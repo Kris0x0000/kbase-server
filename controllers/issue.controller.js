@@ -191,9 +191,10 @@ exports.getAllTags = function (req, res) {
   });
 };
 
-exports.cleanRemovedImages = (req, res) => {
+exports.purgeOrphanedImages = async (req, res) => {
 
-  Issue.find({ images: { $exists: true, $ne: [] } },'images', function(err, docs) {
+
+  await Issue.find({ images: { $exists: true, $ne: [] } },'images', function(err, docs) {
     if(err) {res.send(err)}
     if(docs) {
       var a = [];
@@ -207,19 +208,19 @@ exports.cleanRemovedImages = (req, res) => {
         if(err) {return;}
         if(items) {
           items.map(i=>{
-            console.log("i", i);
+            //console.log("i", i);
             if(!(a.includes(i))) {
               fs.unlink('uploads/'+i, (err)=> {})
             }
-
           });
         }
       });
-
     }
+    return 1;
   });
 
 };
+
 
 
 exports.getIssueById = function (req, res) {
