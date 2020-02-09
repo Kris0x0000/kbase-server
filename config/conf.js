@@ -37,7 +37,7 @@ const prod_settings = {
   // in kilobytes
   upload_file_size_limit: 512,
 
-  server_url_base: 'http://localhost:1234/'
+  server_url_base: 'https://wiedza.zikom.com.pl/'
 };
 
 module.exports = function() {

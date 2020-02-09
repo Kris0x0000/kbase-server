@@ -1,7 +1,7 @@
 {
-  "name": "testapp",
+  "name": "kbase-server",
   "version": "1.0.0",
-  "description": "",
+  "description": "serwer do kbase",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
