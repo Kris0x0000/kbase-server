@@ -1,6 +1,8 @@
 const Issue = require('../models/issue.model');
 const mongoose = require('mongoose');
 const User = require('../models/user.model');
+let multer  = require('multer');
+const express = require('express');
 
 
 
@@ -20,8 +22,6 @@ exports.is_owner = function(req,res) {
           res.sendStatus(400);
           return;
         }
-
-
         if((res.locals.username !== owner) && (!res.locals.is_admin)) {
 
             res.sendStatus(405);
@@ -64,6 +64,7 @@ exports.issue_edit = function(req, res) {
         tags: req.body.tags,
         edit_timestamp: Date.now(),
         editor_id: res.locals.id,
+        images: req.body.images,
       }
 
 
@@ -89,7 +90,8 @@ exports.issue_create = function (req, res) {
           create_timestamp: Date.now(),
           creator_id: res.locals.id,
           edit_timestamp: '',
-          editor_id: ''
+          editor_id: '',
+          images: req.body.images,
         }
     );
 
@@ -138,7 +140,8 @@ ProcessItem = async (item) => {
         create_timestamp: item.create_timestamp,
          creator: creator,
          edit_timestamp: item.edit_timestamp,
-         editor: editor
+         editor: editor,
+         images: item.images,
        };
 }
 
@@ -188,14 +191,46 @@ exports.getAllTags = function (req, res) {
   });
 };
 
+exports.cleanRemovedImages = (req, res) => {
+
+  Issue.find({ images: { $exists: true, $ne: [] } },'images', function(err, docs) {
+    if(err) {res.send(err)}
+    if(docs) {
+      var a = [];
+      docs.map(i=>{
+        a = a.concat(i.images);
+      });
+      // var a - complete array of images
+      var fs = require('fs');
+      //console.log("imgs: ", a);
+      fs.readdir('uploads/', (err, items)=>{
+        if(err) {return;}
+        if(items) {
+          items.map(i=>{
+            console.log("i", i);
+            if(!(a.includes(i))) {
+              fs.unlink('uploads/'+i, (err)=> {})
+            }
+
+          });
+        }
+      });
+
+    }
+  });
+
+};
 
 
 exports.getIssueById = function (req, res) {
 
   Issue.findById({_id: req.body.id}, function(err, docs) {
+    console.log(docs);
     if(err) {res.send(err)}
     if(docs) {
+      //console.log(docs);
       ProcessArray([docs]).then(data => {
+        //console.log(data);
         res.send(data);
       });
 
@@ -235,9 +270,5 @@ exports.issue_delete = function (req, res, next) {
 
       });
   });
-
-
-
-
 
 },(err,req,res) => {console.log(err)};
