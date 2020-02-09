@@ -9,6 +9,8 @@ router.post('/getIssueByTag', issue_controller.getIssueByTag);
 router.post('/getIssueById', issue_controller.getIssueById);
 router.post('/getAllTags', issue_controller.getAllTags);
 router.post('/isOwner', issue_controller.is_owner);
+router.get('/clean', issue_controller.cleanRemovedImages);
+
 
 
 module.exports = router;

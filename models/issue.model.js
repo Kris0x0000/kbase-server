@@ -12,6 +12,7 @@ let IssueSchema = new Schema({
   creator_id: {type: String, required: true},
 	edit_timestamp: {type: Number, required: false},
   editor_id: {type: String, required: false},
+	images: [String],
 },
 		{ collection: 'issues' }
 );

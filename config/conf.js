@@ -11,7 +11,12 @@ const dev_settings = {
 
   // mongodb://username:password@address:port/database
   db_conn_string: 'mongodb://localhost:27017/baza_wiedzy',
-  cors_origin_url: 'http://localhost:3000'
+  cors_origin_url: 'http://localhost:3000',
+
+  // in kilobytes
+  upload_file_size_limit: 512,
+
+  server_url_base: 'http://localhost:1234/'
 };
 
 const prod_settings = {
@@ -27,7 +32,12 @@ const prod_settings = {
 
   // mongodb://username:password@address:port/database
   db_conn_string: 'mongodb://mongo:27017/baza_wiedzy',
-  cors_origin_url: 'https://wiedza.zikom.com.pl'
+  cors_origin_url: 'https://wiedza.zikom.com.pl',
+
+  // in kilobytes
+  upload_file_size_limit: 512,
+
+  server_url_base: 'http://localhost:1234/'
 };
 
 module.exports = function() {

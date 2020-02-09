@@ -8,10 +8,12 @@ exports.isadmin = function(req,res) {
     res.sendStatus(403).end();
     return;
   } else {
-    res.send(200).end();
+    res.sendStatus(200).end();
     return;
   }
 };
+
+
 
 // controllers/products.js
 exports.user_create = function (req, res) {

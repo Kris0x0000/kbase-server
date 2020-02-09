@@ -10,6 +10,13 @@ const db = require('./config/db.js');
 const conf = require('./config/conf.js');
 const auth = require('./auth.js');
 var cookieParser = require('cookie-parser');
+var multer  = require('multer');
+var crypto = require('crypto');
+var mime = require('mime-types');
+
+let upload_dest = 'uploads/'
+app.use('/uploads', express.static(__dirname +'/uploads'));
+
 
 let corsOptions = {
   origin: conf().cors_origin_url,
@@ -17,6 +24,7 @@ let corsOptions = {
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization']
 };
+
 
 
 // app init
@@ -37,6 +45,35 @@ app.all('/api/*', (req, res, next)=>{
 
 app.post('/login',(req, res, next)=>{auth.login(req, res, next)});
 
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+  //  console.log(file.get('id'));
+    cb(null, upload_dest);
+  },
+  filename: function (req, file, cb) {
+    crypto.pseudoRandomBytes(16, function (err, raw) {
+      cb(null, raw.toString('hex') + Date.now() + '.' + mime.extension(file.mimetype));
+    });
+  }
+});
+
+var upload = multer({ storage: storage, limits: { fileSize: 512 * 1024 } }).single('image');
+
+app.post('/api/upload',function (req, res) {
+
+  upload(req, res, function (err) {
+    if (err) {
+      // An error occurred when uploading.
+      res.sendStatus(400);
+      return
+   }
+    res.send({filename: req.file.filename, path: conf().server_url_base+upload_dest, multer_res: conf().server_url_base+upload_dest+req.file.filename });
+    // Everything went fine
+  })
+});
+
+
+
 app.use('/api/user/', user);
 
 app.use('/api/issue', issue);
@@ -54,8 +91,8 @@ app.listen(port, () => {
 );
 
 app.use(function (err, req, res, next) {
-  console.error(err.stack);
-  res.status(500).send('Something broke!');
+  console.error(err);
+  res.status(500).send(err);
 });
 
 
@@ -81,8 +118,5 @@ function initApp (username, password) {
       console.log("users exists!");
     }
   });
-
-
-
 
 } //funct
