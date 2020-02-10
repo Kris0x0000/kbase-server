@@ -15,10 +15,11 @@ var multer  = require('multer');
 var crypto = require('crypto');
 var mime = require('mime-types');
 var cron = require('node-cron');
+var path = require('path');
 
 let upload_dest = 'uploads/'
-app.use('/uploads', express.static(__dirname +'/uploads'));
-
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+console.log("__dirname+uploads: ", path.join(__dirname, 'uploads'));
 
 let corsOptions = {
   origin: conf().cors_origin_url,

@@ -226,7 +226,7 @@ exports.purgeOrphanedImages = async (req, res) => {
 exports.getIssueById = function (req, res) {
 
   Issue.findById({_id: req.body.id}, function(err, docs) {
-    console.log(docs);
+    //console.log(docs);
     if(err) {res.send(err)}
     if(docs) {
       //console.log(docs);
