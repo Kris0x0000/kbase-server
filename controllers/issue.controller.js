@@ -1,10 +1,96 @@
 const Issue = require('../models/issue.model');
 const mongoose = require('mongoose');
 const User = require('../models/user.model');
+const Stats = require('../models/stats.model');
 let multer  = require('multer');
 const express = require('express');
 
 
+
+exports.getStats = (req,res) => {
+  Stats.findOne({}, function(err, docs) {
+    res.send(docs);
+  });
+};
+
+exports.getCollectionCount = (req, res) => {
+
+  let tag_count;
+  let issue_count;
+
+  Issue.countDocuments({}, function(err, count) {
+
+    issue_count = count;
+
+    Issue.find({},'tags', function(err, docs) {
+      if(err) {res.send(err)}
+      if(docs) {
+
+        var arr2 = [];
+        var obj={};
+        var unique_arr
+
+        docs.map((item)=>{
+            item.tags.forEach(a => {
+              arr2.push(a);
+            });
+        });
+
+      let unique = [...new Set(arr2)];
+      tag_count = unique.length;
+          //console.log("unique", unique.length);
+
+      } else {
+        tag_count = 0;
+
+      }
+
+      //saving to db!
+    let stats = new Stats(
+      {
+        tag_count : tag_count,
+        issue_count: issue_count,
+      }
+
+    );
+
+    Stats.findOne({}, function(err, docs) {
+      if(err) {
+      }
+      if(docs) {
+        //console.log("docs", docs);
+        Stats.updateOne({_id: docs._id},{tag_count: tag_count, issue_count: issue_count}, function(req, res) {
+
+        });
+      } else {
+        console.log("no docs found!");
+        stats.save((err)=>{
+          if(err) {console.log(err)} else {
+          //  console.log("creating new document");
+            stats.save((err)=>{
+              if(err) {console.log(err)} else {
+            //    console.log("saving ok");
+              }
+            });
+          }
+        });
+      }
+    });
+
+
+
+
+    });
+
+  });
+
+
+
+
+
+
+
+};
 
 exports.is_owner = function(req,res) {
 

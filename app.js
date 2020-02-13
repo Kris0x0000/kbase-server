@@ -38,6 +38,11 @@ cron.schedule('3 0 * * *', () => {
 issueController.purgeOrphanedImages();
 });
 
+//cron.schedule('0 * * * *', () => {
+  //update stats
+issueController.getCollectionCount();
+//});
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true
