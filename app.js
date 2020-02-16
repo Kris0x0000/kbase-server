@@ -33,11 +33,12 @@ let corsOptions = {
 // app init
 initApp(conf().username, conf().password);
 
-cron.schedule('30 * * * *', () => {
+cron.schedule('0 2 * * *', () => {
   //purge orphaned images
 issueController.purgeOrphanedImages();
 });
-issueController.purgeOrphanedImages();
+
+issueController.purgeOrphanedImages(); // run at app start
 
 cron.schedule('0 * * * *', () => {
   //update stats

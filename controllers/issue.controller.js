@@ -274,10 +274,12 @@ exports.purgeOrphanedImages = async (req, res) => {
   await Issue.find({ images: { $exists: true, $ne: [] } },'images', function(err, docs) {
     if(err) {res.send(err)}
     if(docs) {
+
       var a = [];
       docs.map(i=>{
         a = a.concat(i.images);
       });
+      console.log("a", a);
       // var a - complete array of images
       var fs = require('fs');
       //console.log("imgs: ", a);
@@ -287,6 +289,7 @@ exports.purgeOrphanedImages = async (req, res) => {
           items.map(i=>{
             //console.log("i", i);
             if(!(a.includes(i))) {
+              console.log("unlink", i);
               fs.unlink('uploads/'+i, (err)=> {})
             }
           });
