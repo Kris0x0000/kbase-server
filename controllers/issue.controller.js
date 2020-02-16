@@ -77,18 +77,9 @@ exports.getCollectionCount = (req, res) => {
       }
     });
 
-
-
-
     });
 
   });
-
-
-
-
-
-
 
 };
 
