@@ -37,7 +37,6 @@ cron.schedule('0 2 * * *', () => {
   //purge orphaned images
 issueController.purgeOrphanedImages();
 });
-
 issueController.purgeOrphanedImages(); // run at app start
 
 cron.schedule('0 * * * *', () => {
