@@ -39,7 +39,7 @@ exports.login = (req, res, next) => {
 
       }
       else {
-      res.send(401);
+      res.sendStatus(401);
       res.end();
      }
   });
@@ -47,9 +47,23 @@ exports.login = (req, res, next) => {
 };
 
 
+exports.logoff = (req, res, next) => {
+
+  let token = jwt.sign({ username: 'logged_off'}, jwtKey, {
+ algorithm: 'HS256',
+expiresIn: jwtExpirySec
+}, (err, cb)=>{
+
+  res.cookie('token', cb, { maxAge: jwtExpirySec * 1000});
+    res.status(200);
+      res.end();
+});
+
+}
+
+
 exports.auth = (req, res, next) => {
 
-  //console.log("auth");
 
   if(!req.cookies.token) {
     return res.status(401).end();
@@ -59,11 +73,17 @@ exports.auth = (req, res, next) => {
       return res.status(401).end();
     }
 
+    if(cb.username === 'logged_off') {
+      return res.status(401).end();
+    }
+
     res.locals.username = cb.username;
     res.locals.id = cb.id;
 
     if(cb.is_admin) {
       res.locals.is_admin = true;
+    } else {
+      res.locals.is_admin = false;
     }
 
     const nowUnixSeconds = Math.round(Number(new Date()) / 1000);

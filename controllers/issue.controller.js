@@ -4,6 +4,7 @@ const User = require('../models/user.model');
 const Stats = require('../models/stats.model');
 let multer  = require('multer');
 const express = require('express');
+const db = require('../config/db.js');
 
 
 
@@ -17,6 +18,7 @@ exports.getCollectionCount = (req, res) => {
 
   let tag_count;
   let issue_count;
+  let descending_tags;
 
   Issue.countDocuments({}, function(err, count) {
 
@@ -29,6 +31,9 @@ exports.getCollectionCount = (req, res) => {
         var arr2 = [];
         var obj={};
         var unique_arr
+        let arr3 = [];
+        let tag = [];
+
 
         docs.map((item)=>{
             item.tags.forEach(a => {
@@ -38,7 +43,24 @@ exports.getCollectionCount = (req, res) => {
 
       let unique = [...new Set(arr2)];
       tag_count = unique.length;
-          //console.log("unique", unique.length);
+
+          let j=0;
+          let occurrences;
+          unique.map((item)=>{
+            arr2.forEach(i=>{
+              if(i === item) {
+                j=j+1;
+              }
+            });
+                tag.push({name: item, occurrences: j});
+          j=0;
+          });
+
+          descending_tags = (tag.sort((x,y) => {return y.occurrences - x.occurrences}));
+
+          if(descending_tags.length > 5) {
+            descending_tags = descending_tags.slice(0,5);
+          }
 
       } else {
         tag_count = 0;
@@ -50,6 +72,7 @@ exports.getCollectionCount = (req, res) => {
       {
         tag_count : tag_count,
         issue_count: issue_count,
+        top_tags: descending_tags,
       }
 
     );
@@ -58,18 +81,17 @@ exports.getCollectionCount = (req, res) => {
       if(err) {
       }
       if(docs) {
-        //console.log("docs", docs);
-        Stats.updateOne({_id: docs._id},{tag_count: tag_count, issue_count: issue_count}, function(req, res) {
+        Stats.updateOne({_id: docs._id},{tag_count: tag_count, issue_count: issue_count, top_tags: descending_tags}, function(req, res) {
 
         });
       } else {
         console.log("no docs found!");
         stats.save((err)=>{
           if(err) {console.log(err)} else {
-          //  console.log("creating new document");
+
             stats.save((err)=>{
               if(err) {console.log(err)} else {
-            //    console.log("saving ok");
+
               }
             });
           }
@@ -93,13 +115,16 @@ exports.is_owner = function(req,res) {
       res.sendStatus(399);
       return;
     }
-    owner = issue.username;
+
+owner = issue.creator_id;
+
       User.findOne({username: issue.username}, function(err, user) {
         if(err) {
           res.sendStatus(400);
           return;
         }
-        if((res.locals.username !== owner) && (!res.locals.is_admin)) {
+
+        if((res.locals.id !== owner) && (!res.locals.is_admin)) {
 
             res.sendStatus(405);
             return;
@@ -279,17 +304,13 @@ exports.purgeOrphanedImages = async (req, res) => {
       docs.map(i=>{
         a = a.concat(i.images);
       });
-      console.log("a", a);
       // var a - complete array of images
       var fs = require('fs');
-      //console.log("imgs: ", a);
       fs.readdir('uploads/', (err, items)=>{
         if(err) {return;}
         if(items) {
           items.map(i=>{
-            //console.log("i", i);
             if(!(a.includes(i))) {
-              console.log("unlink", i);
               fs.unlink('uploads/'+i, (err)=> {})
             }
           });
@@ -306,12 +327,12 @@ exports.purgeOrphanedImages = async (req, res) => {
 exports.getIssueById = function (req, res) {
 
   Issue.findById({_id: req.body.id}, function(err, docs) {
-    //console.log(docs);
+
     if(err) {res.send(err)}
     if(docs) {
-      //console.log(docs);
+
       ProcessArray([docs]).then(data => {
-        //console.log(data);
+
         res.send(data);
       });
 

@@ -43,6 +43,7 @@ cron.schedule('0 * * * *', () => {
   //update stats
 issueController.getCollectionCount();
 });
+issueController.getCollectionCount();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -58,6 +59,7 @@ app.all('/api/*', (req, res, next)=>{
 );
 
 app.post('/login',(req, res, next)=>{auth.login(req, res, next)});
+app.post('/logout',(req, res, next)=>{auth.logoff(req, res, next)});
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {

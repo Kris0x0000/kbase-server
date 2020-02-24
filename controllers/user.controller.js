@@ -19,7 +19,7 @@ exports.isadmin = function(req,res) {
 exports.user_create = function (req, res) {
 
     if(!res.locals.is_admin) {
-      res.send(401).end();
+      res.sendStatus(403).end();
       return;
     }
 
@@ -106,6 +106,11 @@ exports.get_all_users = function (req,res) {
 
 
 exports.user_delete = function (req, res) {
+
+  if(!res.locals.is_admin) {
+    res.sendStatus(403).end();
+    return;
+  }
 
   User.findByIdAndDelete({_id: req.body.id}, function(err, issue) {
     if(err) {
