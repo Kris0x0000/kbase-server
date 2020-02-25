@@ -146,13 +146,13 @@ exports.issue_edit = function(req, res) {
       res.sendStatus(404);
       return;
     }
-    owner = issue.username;
-      User.findOne({username: issue.username}, function(err, user) {
+
+      User.findOne({_id: issue.creator_id}, function(err, user) {
         if(err) {
           res.sendStatus(404);
           return;
         }
-
+        owner = user.username;
           if((res.locals.username !== owner) && (!res.locals.is_admin)) {
 
             res.sendStatus(405);
@@ -353,12 +353,15 @@ exports.issue_delete = function (req, res, next) {
       res.sendStatus(404);
       return;
     }
-    owner = issue.username;
-      User.findOne({username: issue.username}, function(err, user) {
+
+      User.findOne({_id: issue.creator_id}, function(err, user) {
         if(err) {
           res.sendStatus(404);
+
           return;
         }
+        owner = user.username;
+        //console.log("owner", owner);
 
       if((res.locals.username !== owner) && (!res.locals.is_admin)) {
 
