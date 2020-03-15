@@ -33,6 +33,9 @@ let corsOptions = {
 // app init
 initApp(conf().username, conf().password);
 
+// check if images links are correct, fix if needed
+issueController.changeImageUrlBase();
+
 cron.schedule('0 2 * * *', () => {
   //purge orphaned images
 issueController.purgeOrphanedImages();

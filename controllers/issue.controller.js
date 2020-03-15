@@ -5,6 +5,7 @@ const Stats = require('../models/stats.model');
 let multer  = require('multer');
 const express = require('express');
 const db = require('../config/db.js');
+const conf = require('../config/conf.js');
 
 
 
@@ -291,6 +292,29 @@ exports.getAllTags = function (req, res) {
       res.send('not found');
     }
   });
+};
+
+exports.changeImageUrlBase = async (req,res) => {
+  await Issue.find({ images: { $exists: true, $ne: [] } },function(err,docs) {
+    // retdurns docs withs imagexs
+    if(err) {res.send(err)}
+      this.AsyncFindAndChangeLinks(docs,/https?\:\/\/\w+(\.\w+)*\:?\w*.?\w*\/uploads\//g, conf().server_url_base+'uploads/')
+      .then((val)=>{
+    })
+    .catch();
+  });
+};
+
+
+AsyncFindAndChangeLinks = async (docs, old_urlbase, new_urlbase)=> {
+await docs.map(doc=>{
+    if(old_urlbase !== new_urlbase) {
+      doc.body = doc.body.replace(old_urlbase, new_urlbase);
+      //console.log(doc.body);
+    }
+ doc.save();
+  });
+    return true;
 };
 
 exports.purgeOrphanedImages = async (req, res) => {
