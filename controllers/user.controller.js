@@ -60,8 +60,8 @@ let ar1 = user.last_searched_tags.concat(req.body.last_searched_tags);
 let unique = [...new Set(ar1)];
 let arr2;
 
-if(unique.length > 20) {
-  arr2 = unique.slice(0,21);
+if(unique.length > 10) {
+  arr2 = unique.slice(0,11);
 } else {
   arr2 = unique;
 }
