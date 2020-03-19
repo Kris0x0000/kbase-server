@@ -10,5 +10,7 @@ router.post('/getIssueById', issue_controller.getIssueById);
 router.post('/getAllTags', issue_controller.getAllTags);
 router.post('/isOwner', issue_controller.is_owner);
 router.post('/getStats', issue_controller.getStats);
+router.post('/getAllIssues', issue_controller.getAllIssues);
+
 
 module.exports = router;

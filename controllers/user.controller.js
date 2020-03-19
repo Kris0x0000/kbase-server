@@ -40,6 +40,60 @@ exports.user_create = function (req, res) {
     })
 };
 
+
+
+
+exports.add_last_searched_tags = function (req, res) {
+
+  User.findById(res.locals.id, function(err, user) {
+    if(err) {
+      res.send(err);
+      return;
+    }
+    if(req.body.last_searched_tags.length === 0) {
+      res.sendStatus(200);
+    return;
+    }
+
+let ar1 = user.last_searched_tags.concat(req.body.last_searched_tags);
+//let arr1_reversed = ar1.reverse();
+let unique = [...new Set(ar1)];
+let arr2;
+
+if(unique.length > 20) {
+  arr2 = unique.slice(0,21);
+} else {
+  arr2 = unique;
+}
+
+    user.last_searched_tags = arr2.sort();
+    user.save();
+    res.sendStatus(200);
+  });
+
+
+
+
+
+};
+
+exports.get_last_searched_tags = function (req, res) {
+  User.findById(res.locals.id, function(err, user) {
+    if(err) {
+      res.send(err);
+      return;
+    }
+    if(user.last_searched_tags) {
+      res.send(user.last_searched_tags);
+    } else {
+      res.sendStatus(200);
+    }
+
+  });
+
+};
+
+
 exports.user_edit = function (req, res) {
 
     if(!res.locals.is_admin) {

@@ -15,6 +15,4 @@ let StatsSchema = new Schema({
 
 
 
-
-
 module.exports = mongoose.model('Stats', StatsSchema);

@@ -265,7 +265,13 @@ GetOwnerName = async (id) => {
     });
 }
 
-
+exports.getAllIssues = function (req, res) {
+  Issue.find({},{}, function(err, docs) {
+    ProcessArray(docs).then(data => {
+      res.send(data);
+    });
+  });
+};
 
 exports.getAllTags = function (req, res) {
 

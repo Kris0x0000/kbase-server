@@ -15,6 +15,9 @@ router.post('/getUserByName', user_controller.get_user_by_name);
 router.post('/delete', user_controller.user_delete);
 router.post('/editMyUser', user_controller.edit_my_user);
 router.post('/getMyId', user_controller.get_my_id);
+router.post('/addLastTags', user_controller.add_last_searched_tags);
+router.post('/getLastTags', user_controller.get_last_searched_tags);
+
 
 
 module.exports = router;
