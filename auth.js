@@ -6,9 +6,13 @@ const app = express();
 const cors = require('cors');
 const CookieParser = require('cookie-parser');
 const conf = require('./config/conf.js');
+const crypto = require("crypto");
 
 
-const jwtKey = conf().jwt_key;
+//const jwtKey = conf().jwt_key;
+
+let jwtKey = crypto.randomBytes(20).toString('hex');
+console.log(jwtKey);
 const jwtExpirySec = conf().token_timeout;
 
 exports.login = (req, res, next) => {

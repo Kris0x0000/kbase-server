@@ -7,7 +7,7 @@ const dev_settings = {
   token_timeout: 900,
 
   // whatever, but need to change before use for security reasons
-  jwt_key: 'arturborubar',
+  //jwt_key: 'arturborubar',
 
   // mongodb://username:password@address:port/database
   db_conn_string: 'mongodb://localhost:27017/baza_wiedzy',
@@ -28,7 +28,7 @@ const prod_settings = {
   token_timeout: 900,
 
   // whatever, but need to change before use for security reasons
-  jwt_key: 'arturborubar',
+  //jwt_key: 'arturborubar',
 
   // mongodb://username:password@address:port/database
   db_conn_string: 'mongodb://mongo:27017/baza_wiedzy',
