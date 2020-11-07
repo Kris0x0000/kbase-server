@@ -12,7 +12,7 @@ mongoose.Promise = global.Promise;
 let db = mongoose.connection;
 
 db.once('open', function() {
-  console.log('connected do the database!');
+  console.log('connected to the database!');
 });
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 

@@ -9,15 +9,11 @@ const conf = require('./config/conf.js');
 const crypto = require("crypto");
 
 
-//const jwtKey = conf().jwt_key;
-
 let jwtKey = crypto.randomBytes(20).toString('hex');
 console.log(jwtKey);
 const jwtExpirySec = conf().token_timeout;
 
 exports.login = (req, res, next) => {
-
-  //console.log("login");
 
   User.findOne({username: req.body.username, password: req.body.password}, (err, result)=>{
       if(err) {console.log(err)}

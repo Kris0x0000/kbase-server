@@ -98,6 +98,7 @@ app.use('/api/user/', user);
 app.use('/api/issue', issue);
 
 app.post('/api/isauthenticated', (req, res, next)=>{
+  res.send({timeout: conf().token_timeout*1000});
   res.status(200).end();
   }
 ); //end of app.get
