@@ -1,6 +1,6 @@
 {
   "name": "kbase-server",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "serwer do kbase",
   "main": "index.js",
   "scripts": {
