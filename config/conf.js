@@ -19,7 +19,7 @@ const dev_settings = {
   server_url_base: 'http://localhost:1234/'
 };
 
-const prod_settings = {
+let prod_settings = {
   // defult administration user, created if no users found in db.
   username: "admin",
   password: "12345",
@@ -42,7 +42,11 @@ const prod_settings = {
 
 module.exports = function() {
 
-  if(process.env.NODE_ENV === 'production') {
+  if((process.env.NODE_ENV === 'production') && process.env.DBUSER && process.env.DBPASSWORD) {
+    prod_settings = {...prod_settings, db_conn_string: `mongodb://${process.env.DBUSER}:${process.env.DBPASSWORD}@mongo:27017/baza_wiedzy`};
+  }
+
+  else if(process.env.NODE_ENV === 'production') {
       return(prod_settings);
   } else {
     //development

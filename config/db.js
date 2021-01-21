@@ -6,7 +6,7 @@ dev_db_url = conf().db_conn_string;
 
 
 let mongoDB = process.env.MONGODB_URI || dev_db_url;
-mongoose.connect(mongoDB, {useNewUrlParser: true, useFindAndModify: false});
+mongoose.connect(mongoDB, {useNewUrlParser: true, useFindAndModify: false, useUnifiedTopology: true});
 mongoose.set('useCreateIndex', true);
 mongoose.Promise = global.Promise;
 let db = mongoose.connection;
