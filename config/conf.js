@@ -44,6 +44,7 @@ module.exports = function() {
 
   if((process.env.NODE_ENV === 'production') && process.env.DBUSER && process.env.DBPASSWORD) {
     prod_settings = {...prod_settings, db_conn_string: `mongodb://${process.env.DBUSER}:${process.env.DBPASSWORD}@mongo:27017/baza_wiedzy`};
+      return(prod_settings);
   }
 
   else if(process.env.NODE_ENV === 'production') {
