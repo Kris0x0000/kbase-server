@@ -8,8 +8,9 @@ const CookieParser = require("cookie-parser");
 const conf = require("./config/conf.js");
 const crypto = require("crypto");
 
-let jwtKey = crypto.randomBytes(20).toString("hex");
-console.log(jwtKey);
+//let jwtKey = crypto.randomBytes(20).toString("hex");
+let jwtKey = 'xxTESTxx12345)';
+console.log("jwtKey:", jwtKey);
 const jwtExpirySec = conf().token_timeout;
 
 exports.login = (req, res, next) => {

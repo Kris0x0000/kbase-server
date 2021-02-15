@@ -370,12 +370,15 @@ exports.getIssueById = function (req, res) {
 
     User.findOne({ _id: issue.creator_id }, function (err, user) {
       if (err) {
-        res.sendStatus(404);
+        //res.sendStatus(404);
 
-        return;
+        //return;
       }
+      if(owner) {
       owner = user.username;
-      //console.log("owner", owner);
+    } else {
+      owner = 'usuniety';
+    }
 
       if (res.locals.username !== owner && !res.locals.is_admin) {
         res.sendStatus(405);

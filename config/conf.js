@@ -4,7 +4,7 @@ const dev_settings = {
   password: "12345",
 
   // token expiry timeout (seconds)
-  token_timeout: 900,
+  token_timeout: 900000,
 
   // whatever, but need to change before use for security reasons
   //jwt_key: 'arturborubar',
@@ -41,7 +41,6 @@ let prod_settings = {
 };
 
 module.exports = function() {
-
   if((process.env.NODE_ENV === 'production') && process.env.DBUSER && process.env.DBPASSWORD) {
     prod_settings = {...prod_settings, db_conn_string: `mongodb://${process.env.DBUSER}:${process.env.DBPASSWORD}@mongo:27017/baza_wiedzy`};
       return(prod_settings);

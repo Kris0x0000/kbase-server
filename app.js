@@ -5,6 +5,7 @@ const cors = require("cors");
 const issue = require("./routes/issue.route");
 const issueController = require("./controllers/issue.controller");
 const user = require("./routes/user.route");
+const credential = require("./routes/credential.route");
 const User = require("./models/user.model");
 const app = express();
 const db = require("./config/db.js");
@@ -20,6 +21,7 @@ var path = require("path");
 let upload_dest = "uploads/";
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 console.log("__dirname+uploads: ", path.join(__dirname, "uploads"));
+console.log("settings", conf().cors_origin_url);
 
 let corsOptions = {
   origin: conf().cors_origin_url,
@@ -30,6 +32,9 @@ let corsOptions = {
 
 // app init
 initApp(conf().username, conf().password);
+
+app.use(cookieParser());
+app.use(cors(corsOptions));
 
 // check if images links are correct, fix if needed
 issueController.changeImageUrlBase();
@@ -52,8 +57,7 @@ app.use(
     extended: true,
   })
 );
-app.use(cookieParser());
-app.use(cors(corsOptions));
+
 
 app.all("/api/*", (req, res, next) => {
   auth.auth(req, res, next);
@@ -105,6 +109,8 @@ app.post("/api/upload", function (req, res) {
 app.use("/api/user/", user);
 
 app.use("/api/issue", issue);
+
+app.use("/api/credential", credential);
 
 app.post("/api/isauthenticated", (req, res, next) => {
   res.send({ timeout: conf().token_timeout * 1000 });
