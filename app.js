@@ -6,6 +6,7 @@ const issue = require("./routes/issue.route");
 const issueController = require("./controllers/issue.controller");
 const user = require("./routes/user.route");
 const credential = require("./routes/credential.route");
+const group = require("./routes/group.route");
 const User = require("./models/user.model");
 const app = express();
 const db = require("./config/db.js");
@@ -17,6 +18,7 @@ var crypto = require("crypto");
 var mime = require("mime-types");
 var cron = require("node-cron");
 var path = require("path");
+const Group = require("./models/group.model");
 
 let upload_dest = "uploads/";
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
@@ -110,6 +112,8 @@ app.use("/api/user/", user);
 
 app.use("/api/issue", issue);
 
+app.use("/api/group", group);
+
 app.use("/api/credential", credential);
 
 app.post("/api/isauthenticated", (req, res, next) => {
@@ -150,4 +154,25 @@ function initApp(username, password) {
       console.log("users exists!");
     }
   });
+
+
+  Group.find({}, function (err, docs) {
+    if (docs.length === 0) {
+      console.log(
+        "\n adding default group: Wszyscy",
+      );
+      let group = new Group({
+        name: "Wszyscy",
+      });
+
+      group.save(function (err) {
+        if (err) {
+          console.log(err);
+        }
+      });
+    } else {
+      //console.log("users exists!");
+    }
+  });
+
 } //funct

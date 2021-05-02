@@ -105,6 +105,7 @@ exports.createCredential = (req, res) => {
     password: { encrypted_password: encrypted.data, iv: encrypted.iv },
     notes: req.body.notes,
     auth_users: req.body.auth_users, // [{user_id: res.locals.id, permission:'rw'}]
+    auth_groups: req.body.auth_groups,
     traced_users: [{ user_id: res.locals.id, timestamp: Date.now() }],
     timestamp: Date.now(),
     tags: req.body.tags,
@@ -113,6 +114,48 @@ exports.createCredential = (req, res) => {
 
   saveItem(item, res);
 };
+
+
+exports.updateCredential = async (req, res) => {
+  // find credential item
+  try {
+    let item = await Credential.findById({ _id: req.body.id }).exec();
+  } catch (err) {
+    errHandle(err);
+  }
+
+  let checkedUserPermission = checkUserPermission(req, res, item);
+  let checkedGroupPermission = checkGroupPermission(req, res, item);
+
+  if (!checkedUserPermission && !checkGroupPermission) {
+    res.sendStatus(405).end();
+    return;
+  }
+
+  if ((checkedUserPermission || checkGroupPermission) === "rw") {
+    // authorised
+    let updatedTrackingInfo = updateTrackingInfo(res.locals.id, item.traced_users);
+
+    let item = new Credential({
+      title: req.body.title,
+      login: req.body.login,
+      password: req.body.password,
+      notes: req.body.notes,
+      auth_users: req.body.auth_users, // [{user_id: res.locals.id, permission:'rw'}]
+      auth_groups: req.body.auth_groups,
+      traced_users: updatedTrackingInfo,
+      timestamp: Date.now(),
+      tags: req.body.tags,
+      creator_id: res.locals.id,
+    });
+      saveItem(item, res);
+  } else {
+    res.sendStatus(405).end();
+  }
+};
+
+
+
 
 exports.getAllCredentials = async (req, res) => {
   try {
@@ -221,37 +264,6 @@ let checkGroupPermission = async (res, item) => {
   return permission;
 };
 
-exports.updateCredential = async (req, res) => {
-  // find credential item
-  try {
-    let item = await Credential.findById({ _id: req.body.id }).exec();
-  } catch (err) {
-    errHandle(err);
-  }
-
-  let checkedUserPermission = checkUserPermission(req, res, item);
-  let checkedGroupPermission = checkGroupPermission(req, res, item);
-
-  if (!checkedUserPermission && !checkGroupPermission) {
-    res.sendStatus(405).end();
-    return;
-  }
-
-  if ((checkedUserPermission || checkGroupPermission) === "rw") {
-    // authorised
-    let updatedTrackingInfo = updateTrackingInfo(res.locals.id, item.traced_users);
-
-    let credential = new Credential({
-      login: req.body.login,
-      password: req.body.password,
-      timestamp: Date.now(),
-      creator_id: res.locals.id,
-      auth_users: req.body.auth_users, // [{user_id: res.locals.id, permission:'rw'}]
-      traced_users: updatedTrackingInfo,
-      tags: req.body.tags,
-    });
-  }
-};
 
 exports.deleteCredential = function (req, res) {
   Credential.findById({ _id: req.body.id }, function (err, credential) {
